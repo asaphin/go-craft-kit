@@ -2,45 +2,39 @@
 package slices
 
 // ChunksIndexesByNumberOfChunks creates a 2D slice of element indexes based on the initial slice length
-// and the desired number of subslices.
-// Example: length = 10, subslices = 3, result = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}}
+// and the required number of chunks.
+// Example: length = 10, nChunks = 3, result = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}}
 func ChunksIndexesByNumberOfChunks(length, nChunks int) [][]int {
-	// Calculate the maximum length of each subslice.
-	maxSubsliceLength := length / nChunks
+	maxChunkLength := length / nChunks
 	if length%nChunks != 0 {
-		maxSubsliceLength++
+		maxChunkLength++
 	}
 
-	// Delegate the actual slicing to ChunksIndexesByMaxLenOfChunk.
-	return ChunksIndexesByMaxLenOfChunk(length, maxSubsliceLength)
+	return ChunksIndexesByMaxLenOfChunk(length, maxChunkLength)
 }
 
 // ChunksIndexesByMaxLenOfChunk creates a 2D slice of element indexes based on the initial slice length
-// and the maximum length of each subslice.
-// Example: length = 10, maxSubsliceLength = 4, result = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}}
-func ChunksIndexesByMaxLenOfChunk(length, maxChunkength int) [][]int {
-	// Calculate the number of subslices and the length of the last subslice.
-	cutLength := length / maxChunkength
-	lastSubsliceLength := length % maxChunkength
-	incompleteSubslice := lastSubsliceLength != 0
+// and the required maximum length of each chunk.
+// Example: length = 10, maxChunkLength = 4, result = {{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}}
+func ChunksIndexesByMaxLenOfChunk(length, maxChunkLength int) [][]int {
+	chunkLength := length / maxChunkLength
+	lastChunkLength := length % maxChunkLength
+	incompleteChunk := lastChunkLength != 0
 
-	// Adjust the cut length if there is an incomplete subslice.
-	if incompleteSubslice {
-		cutLength++
+	if incompleteChunk {
+		chunkLength++
 	}
 
 	index := 0
-	indexes := make([][]int, cutLength)
-	for i := 0; i < cutLength; i++ {
-		// Determine the length of the current subslice.
-		nextSubsliceLength := maxChunkength
-		if i == cutLength-1 && incompleteSubslice {
-			nextSubsliceLength = lastSubsliceLength
+	indexes := make([][]int, chunkLength)
+	for i := 0; i < chunkLength; i++ {
+		nextChunkLength := maxChunkLength
+		if i == chunkLength-1 && incompleteChunk {
+			nextChunkLength = lastChunkLength
 		}
 
-		// Create the subslice and populate it with indexes.
-		indexes[i] = make([]int, nextSubsliceLength)
-		for j := 0; j < nextSubsliceLength; j++ {
+		indexes[i] = make([]int, nextChunkLength)
+		for j := 0; j < nextChunkLength; j++ {
 			indexes[i][j] = index
 			index++
 		}
