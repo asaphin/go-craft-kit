@@ -5,101 +5,101 @@ import (
 	"testing"
 )
 
-func TestCuttingIndexesMLOS(t *testing.T) {
+func TestChunksIndexesByMaxLenOfChunk(t *testing.T) {
 	cases := []struct {
-		Length            int
-		MaxSubsliceLength int
-		ExpectedIndexes   [][]int
+		length          int
+		maxChunkLength  int
+		expectedIndexes [][]int
 	}{
 		{
-			Length:            10,
-			MaxSubsliceLength: 4,
-			ExpectedIndexes:   [][]int{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}},
+			length:          10,
+			maxChunkLength:  4,
+			expectedIndexes: [][]int{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}},
 		},
 		{
-			Length:            4,
-			MaxSubsliceLength: 4,
-			ExpectedIndexes:   [][]int{{0, 1, 2, 3}},
+			length:          4,
+			maxChunkLength:  4,
+			expectedIndexes: [][]int{{0, 1, 2, 3}},
 		},
 		{
-			Length:            4,
-			MaxSubsliceLength: 1,
-			ExpectedIndexes:   [][]int{{0}, {1}, {2}, {3}},
+			length:          4,
+			maxChunkLength:  1,
+			expectedIndexes: [][]int{{0}, {1}, {2}, {3}},
 		},
 		{
-			Length:            4,
-			MaxSubsliceLength: 2,
-			ExpectedIndexes:   [][]int{{0, 1}, {2, 3}},
+			length:          4,
+			maxChunkLength:  2,
+			expectedIndexes: [][]int{{0, 1}, {2, 3}},
 		},
 		{
-			Length:            2,
-			MaxSubsliceLength: 3,
-			ExpectedIndexes:   [][]int{{0, 1}},
+			length:          2,
+			maxChunkLength:  3,
+			expectedIndexes: [][]int{{0, 1}},
 		},
 	}
 
 	for i := range cases {
-		cutIndexes := CuttingIndexesMLOS(cases[i].Length, cases[i].MaxSubsliceLength)
-		if !reflect.DeepEqual(cases[i].ExpectedIndexes, cutIndexes) {
-			t.Errorf("expected: %v; actual: %v", cases[i].ExpectedIndexes, cutIndexes)
+		cutIndexes := ChunksIndexesByMaxLenOfChunk(cases[i].length, cases[i].maxChunkLength)
+		if !reflect.DeepEqual(cases[i].expectedIndexes, cutIndexes) {
+			t.Errorf("expected: %v; actual: %v", cases[i].expectedIndexes, cutIndexes)
 		}
 	}
 }
 
-func TestCuttingIndexesNOS(t *testing.T) {
+func TestChunksIndexesByNumberOfChunks(t *testing.T) {
 	cases := []struct {
-		Length          int
-		Subslices       int
-		ExpectedIndexes [][]int
+		length          int
+		nChunks         int
+		expectedIndexes [][]int
 	}{
 		{
-			Length:          10,
-			Subslices:       3,
-			ExpectedIndexes: [][]int{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}},
+			length:          10,
+			nChunks:         3,
+			expectedIndexes: [][]int{{0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9}},
 		},
 		{
-			Length:          10,
-			Subslices:       4,
-			ExpectedIndexes: [][]int{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9}},
+			length:          10,
+			nChunks:         4,
+			expectedIndexes: [][]int{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9}},
 		},
 		{
-			Length:          4,
-			Subslices:       1,
-			ExpectedIndexes: [][]int{{0, 1, 2, 3}},
+			length:          4,
+			nChunks:         1,
+			expectedIndexes: [][]int{{0, 1, 2, 3}},
 		},
 		{
-			Length:          4,
-			Subslices:       4,
-			ExpectedIndexes: [][]int{{0}, {1}, {2}, {3}},
+			length:          4,
+			nChunks:         4,
+			expectedIndexes: [][]int{{0}, {1}, {2}, {3}},
 		},
 		{
-			Length:          4,
-			Subslices:       5,
-			ExpectedIndexes: [][]int{{0}, {1}, {2}, {3}},
+			length:          4,
+			nChunks:         5,
+			expectedIndexes: [][]int{{0}, {1}, {2}, {3}},
 		},
 		{
-			Length:          4,
-			Subslices:       2,
-			ExpectedIndexes: [][]int{{0, 1}, {2, 3}},
+			length:          4,
+			nChunks:         2,
+			expectedIndexes: [][]int{{0, 1}, {2, 3}},
 		},
 	}
 
 	for i := range cases {
-		cutIndexes := CuttingIndexesNOS(cases[i].Length, cases[i].Subslices)
-		if !reflect.DeepEqual(cases[i].ExpectedIndexes, cutIndexes) {
-			t.Errorf("expected: %v; actual: %v", cases[i].ExpectedIndexes, cutIndexes)
+		cutIndexes := ChunksIndexesByNumberOfChunks(cases[i].length, cases[i].nChunks)
+		if !reflect.DeepEqual(cases[i].expectedIndexes, cutIndexes) {
+			t.Errorf("expected: %v; actual: %v", cases[i].expectedIndexes, cutIndexes)
 		}
 	}
 }
 
-func BenchmarkCuttingIndexesMLOS(b *testing.B) {
+func BenchmarkChunksIndexesByMaxLenOfChunk(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_ = CuttingIndexesMLOS(1025, 19)
+		_ = ChunksIndexesByMaxLenOfChunk(1025, 19)
 	}
 }
 
-func BenchmarkCuttingIndexesNOS(b *testing.B) {
+func BenchmarkChunksIndexesByNumberOfChunks(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_ = CuttingIndexesNOS(1025, 19)
+		_ = ChunksIndexesByNumberOfChunks(1025, 19)
 	}
 }
